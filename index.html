@@ -1,0 +1,1518 @@
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <style>
+            pre, code {
+                font-size: 16px;
+            }
+        </style>
+        <style>
+        .leaderboard-table thead th:nth-child(3),
+        .leaderboard-table thead th:nth-child(4),
+        .leaderboard-table thead th:nth-child(12),
+        .leaderboard-table thead th:nth-child(13),
+        .leaderboard-table tbody td:nth-child(3),
+        .leaderboard-table tbody td:nth-child(4),
+        .leaderboard-table tbody td:nth-child(12),
+        .leaderboard-table tbody td:nth-child(13) {
+            display: none;
+        }
+
+        .leaderboard-table { border-radius: 10px; overflow: hidden; border: 0; }
+        .leaderboard-table thead { background: linear-gradient(90deg, #ff6b6b, #f7b267); color: #fff; }
+        .leaderboard-table th { text-transform: uppercase; letter-spacing: .04em; font-weight: 700; }
+        .leaderboard-table tbody tr:nth-child(odd) { background: #fffaf0; }
+        .leaderboard-table tbody tr:nth-child(even) { background: #fff5f7; }
+        .leaderboard-table tbody tr:hover { background: #e0f2fe; }
+        .section-header { background-color: #b2f5ea; color: #234e52; }
+        .human-level-row { background: #fefcbf !important; }
+        .best-score { color: #d53f8c; text-decoration-color: #ed64a6; }
+        .model-badge.proprietary-badge { background: #fed7e2; color: #702459; border-color: #fbb6ce; }
+        .model-badge.open-badge { background: #c6f6d5; color: #22543d; border-color: #9ae6b4; }
+        .model-badge.light-nav { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .model-badge.navllm { background: #e0e7ff; color: #3730a3; border-color: #c7d2fe; }
+        </style>
+
+        <title>NavSpace: How Navigation Agents Follow Spatial Intelligence Instructions</title>
+        <link rel="icon" type="image/x-icon" href="./static/img/icons/brain.ico">
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Open Graph -->
+        <meta property="og:url" content="https://vision-x-nyu.github.io/thinking-in-space.github.io/" />
+        <meta property="og:image" content="./static/img/preview.png" />
+        <meta property="og:title" content="NavSpace: How Navigation Agents Follow Spatial Intelligence Instructions" />
+        
+        <!-- Twitter -->
+        <meta name="twitter:url" content="https://vision-x-nyu.github.io/thinking-in-space.github.io/" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="./static/img/preview.png" />
+        <meta name="twitter:title" content="NavSpace: How Navigation Agents Follow Spatial Intelligence Instructions" />
+        <meta name="twitter:description" content="We introduce NavSpace, a novel benchmark of over 1200 video-based visual-spatial intelligence questions, to evaluate and probe MLLMs, which revealed that their emerging spatial reasoning and local world modeling capabilities remain subhuman but promising." />
+
+        <!-- JS Libraries -->
+        <script src="./static/js/distill_template.v2.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+        <script src="https://rawgit.com/nstrayer/slid3r/master/dist/slid3r.js"></script>
+
+        <script defer="" src="./static/js/hider.js"></script>
+        <script defer src="./static/js/image_interact.js"></script>
+        <script defer src="./static/js/switch_videos.js"></script>
+        <script defer src="./static/js/video-speed.js"></script>
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="./static/css/style.css">
+        <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+        
+        <!-- KaTeX -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+        <!-- FontAwesome -->
+        <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+        <!-- Medium Zoom -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+        <script defer src="./static/js/medium-zoom.min.js"></script>
+        <script defer src="./static/js/zoom.js"></script>
+
+        <!-- Leaderboard Styles -->
+        <style>
+        
+        .leaderboard-table {
+            width: 140%;
+            margin-left: -20%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        .leaderboard-container {
+            position: relative;
+        }
+
+        .leaderboard-table thead {
+            background: #4a5568;
+            color: white;
+        }
+
+        .leaderboard-table th {
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.025em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .sortable-header .sort-indicator {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            font-size: 14px;
+            line-height: 1;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .sortable-header.active .sort-indicator {
+            color: white;
+        }
+        
+        .section-header {
+            background-color: #deeef8;
+            font-weight: 700;
+            color: #2d3748;
+            letter-spacing: 1px;
+            font-size: 18px;
+            text-align: center;
+            padding: 12px !important;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .leaderboard-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+            text-align: center;
+        }
+        
+        .leaderboard-table tbody tr {
+            transition: background-color 0.15s ease;
+        }
+        
+        .leaderboard-table tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .leaderboard-table td:first-child {
+            font-weight: 600;
+            text-align: left;
+            color: #2d3748;
+            padding-left: 20px;
+        }
+        
+        .leaderboard-table td:nth-child(5) {
+            font-weight: 700;
+            font-size: 15px;
+            color: #2d3748;
+        }
+        
+        .human-level-row {
+            background: #fffbeb85 !important;
+            font-weight: 600;
+        }
+        
+        .top-performer {
+            background: #f0fdf494 !important;
+        }
+
+        .top-performer td:first-child::before {
+            content: '🥇 ';
+        }
+
+        .model-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            margin-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .proprietary-badge {
+            background: #e2e8f0;
+            color: #475569;
+            border: 1px solid #cbd5e0;
+        }
+
+        .open-badge {
+            background: #e6fffa;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .leaderboard-table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        
+        .baseline-row {
+            font-style: italic;
+            opacity: 0.8;
+            background-color: #f9fafb;
+        }
+        
+        .best-score {
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-color: #cbd5e0;
+            text-underline-offset: 2px;
+        }
+
+        .section-divider {
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        @media (max-width: 768px) {
+            .leaderboard-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scroll-behavior: smooth;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+            
+            .leaderboard-table {
+                width: 1200px; /* Fixed width to ensure horizontal scrolling */
+                margin-left: 0;
+                font-size: 12px;
+                min-width: 1200px;
+            }
+            
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 8px;
+                white-space: nowrap;
+                min-width: 80px;
+            }
+            
+            .leaderboard-table td:first-child {
+                min-width: 180px;
+                max-width: 180px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding-left: 12px;
+            }
+
+            /* Add scroll hint for mobile users */
+            .leaderboard-container::after {
+                content: "← Swipe to scroll →";
+                position: absolute;
+                bottom: -25px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 11px;
+                color: #666;
+                font-style: italic;
+                pointer-events: none;
+            }
+        }
+        </style>
+        <script>
+        // Fallbacks for missing assets so the page can render without local files
+        (function () {
+            const PLACEHOLDER_SRC = './static/img/placeholder.svg';
+
+            function applyImgFallback(img) {
+                if (!img || img.dataset.fallbackApplied === '1') return;
+                img.dataset.fallbackApplied = '1';
+                img.removeAttribute('srcset');
+                img.src = PLACEHOLDER_SRC;
+            }
+
+            document.addEventListener('error', function (e) {
+                const target = e.target;
+                if (target && target.tagName === 'IMG') {
+                    applyImgFallback(target);
+                }
+            }, true);
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Ensure all existing <img> have fallbacks
+                document.querySelectorAll('img').forEach(function (img) {
+                    img.addEventListener('error', function () { applyImgFallback(img); });
+                    if (img.complete && img.naturalWidth === 0) {
+                        applyImgFallback(img);
+                    }
+                });
+
+                // Video fallback: replace broken videos with a placeholder image
+                function replaceVideoWithPlaceholder(videoEl) {
+                    if (!videoEl || videoEl.dataset.fallbackApplied === '1') return;
+                    videoEl.dataset.fallbackApplied = '1';
+                    const img = document.createElement('img');
+                    img.alt = 'placeholder';
+                    img.src = PLACEHOLDER_SRC;
+                    img.style.width = '100%';
+                    img.style.height = 'auto';
+                    try {
+                        videoEl.parentNode.replaceChild(img, videoEl);
+                    } catch (_) { /* no-op */ }
+                }
+
+                document.querySelectorAll('video').forEach(function (vid) {
+                    // If source fails to load, swap with placeholder
+                    const source = vid.querySelector('source');
+                    if (source) {
+                        source.addEventListener('error', function () { replaceVideoWithPlaceholder(vid); }, true);
+                    }
+                    vid.addEventListener('error', function () { replaceVideoWithPlaceholder(vid); }, true);
+                    // Give the browser a moment; if still not loaded, fallback
+                    setTimeout(function () {
+                        if (vid.readyState === 0) {
+                            replaceVideoWithPlaceholder(vid);
+                        }
+                    }, 1200);
+                });
+
+                // Define no-op handlers to avoid errors if supporting scripts are missing
+                if (typeof window.switchVideo !== 'function') {
+                    window.switchVideo = function () { /* no-op for missing script */ };
+                }
+            });
+        })();
+        </script>
+    </head>
+
+    <body>
+        <div class="header-wrapper">
+            <div class="header-container" id="header-container">
+                <div class="header-content">
+                    <h1 style="margin-top: 0px"><i>NavSpace</i></h1>
+                    <div class="responsive-header">
+                        <h2>How Navigation Agents Follow Spatial Intelligence Instructions</h2>
+                      </div>
+                        <div class="icon-container">
+                            <div class="icon-item">
+                                
+                                <img src="static/img/icons/benchmark.svg" alt="Visual Representation Icon">
+                                <div><strong>NavSpace</strong>: We introduce the first spatial intelligence benchmark for instruction-based navigation: NavSpace.</div>
+                            </div>
+                            <div class="icon-item">
+                                <img src="./static/img/icons/evaluation.svg" alt="Connector Design Icon">
+                                <div><strong>Evaluation</strong>: we comprehensively evaluate 22 navigation agents in total, containing models from open-source MLLM, proprietary MLLM, lightweight navigation models to navigation large models.</div>
+                            </div>
+                            <div class="icon-item">
+                                <img src="./static/img/icons/speech.svg" alt="Speech Logo" class="icon">
+                                <div><strong>Discussions</strong>: Based on the evaluation results, we conducted a detailed analysis of the limitations of existing methods and distilled four key insights.</div>
+                            </div>
+                            <div class="icon-item">
+                                <img src="static/img/icons/baseline.svg" alt="Vision Logo" class="icon">
+                                <div><strong>Baseline Model: SNav</strong>: We propose SNav, a spatially intelligent navigation model, that surpasses existing models and establishes a strong baseline for NavSpace and real robot tests. </div>
+                            </div>
+                        </div>
+                    
+
+                    
+                    <div class="button-container">
+                        <a href="https://arxiv.org/abs/2412.14171" class="button paper-link" target="_blank">
+                            <span class="icon is-small">
+                                <img src="static/img/icons/arxiv.svg" alt="Github_logo" style="height: 1.5em;">
+                            </span>
+                            arXiv
+                        </a>
+                        <a href="https://github.com/vision-x-nyu/thinking-in-space" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="static/img/icons/github.svg" alt="Github_logo" style="height: 1.5em;">
+                            </span>
+                            <span>Code</span>
+                        </a>                      
+                        <a href="https://huggingface.co/datasets/nyu-visionx/VSI-Bench" class="button" target="_blank">
+                            <span class="icon is-small">
+                                <img src="static/img/icons/huggingface.svg" alt="Hugging Face logo" style="height: 1.5em;">
+                            </span>
+                            <span>SNav Model</span>
+                        </a>
+                        <a href="#vsi-leaderboard" class="button">
+                            <span class="icon is-small">
+                                <img src="static/img/icons/Leaderboard.svg" alt="Leaderboard logo" style="height: 1.5em;">
+                            </span>
+                            <span>Leaderboard</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="header-image">
+                    <img draggable="false" src="static/img/preview.png" alt="Teaser Image" class="teaser-image">
+                </div>
+            </div>
+        </div>
+    <d-article>
+
+        
+        <div class="byline">
+            <div class="byline-container">
+                <div class="byline-column" style="line-height: 1.2;">
+                    <h3 style="font-size: 1.2em; margin-bottom: 0.2em;">Authors</h3>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Haolin Yang</a> 
+                        <sup style="font-size: 0.9em;">△*</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Yuxing Long</a> 
+                        <sup style="font-size: 0.9em;">△*</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Zhuoyuan Yu</a> 
+                        <sup style="font-size: 0.9em;">△</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Zihan Yang</a> 
+                        <sup style="font-size: 0.9em;">△</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Minghan Wang</a> 
+                        <sup style="font-size: 0.9em;">△</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Jiapeng Xu</a> 
+                        <sup style="font-size: 0.9em;">△</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Yihan Wang</a> 
+                        <sup style="font-size: 0.9em;">△</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Ziyan Yu</a> 
+                        <sup style="font-size: 0.9em;">▲</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Wenzhe Cai</a> 
+                        <sup style="font-size: 0.9em;">▲</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Lei Kang</a> 
+                        <sup style="font-size: 0.9em;">▲</sup>
+                    </p>
+                    <p style="margin: 0;">
+                        <a class="author-link" target="_blank" style="font-size: 0.9em;">Hao Dong</a> 
+                        <sup style="font-size: 0.9em;">△</sup>
+                    </p>
+                </div>
+                
+                <div class="byline-column" style="line-height: 1.2;">
+                    <h3 style="font-size: 1.2em; margin-bottom: 0.2em;">Affiliations</h3>
+                    <p style="margin: 0;">
+                        <sup style="font-size: 0.8em;">△</sup>
+                        <a href="https://cfcs.pku.edu.cn/" class="affiliation-link" target="_blank" style="font-size: 0.9em;">CFCS, School of Computer Science, Peking University</a>
+                    </p>
+                    <p style="margin: 0;">
+                        <sup style="font-size: 0.8em;">▲</sup>
+                        <a href="https://www.pku.edu.cn" class="affiliation-link" target="_blank" style="font-size: 0.9em;">PKU-Agibot Lab</a>
+                    </p>
+                    <p style="margin: 0;">
+                        <sup style="font-size: 0.8em;">★</sup>
+                        <a href="https://www.stanford.edu/" class="affiliation-link" target="_blank" style="font-size: 0.9em;">xxxx University</a>
+                    </p>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <p style="text-align: center; margin: 0;">
+                        <span class="author-note"><sup>*</sup>Equal contribution</span>&emsp;
+                    </p>
+                </div>
+                
+                <div class="byline-column" style="line-height: 1.2;">
+                    <h3 style="font-size: 1.2em; margin-bottom: 0.2em;">Date</h3>
+                    <p style="margin: 0; font-size: 0.9em;">
+                        Sep.27<sup style="font-size: 0.8em;">th</sup>, 2025
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+        
+
+<script>
+function toggleAnswer(answerId, element) {
+    const answerElement = document.getElementById(answerId);
+    const isVisible = answerElement.style.display === "block";
+
+    if (isVisible) {
+        answerElement.style.display = "none";
+        element.innerHTML = '<img src="static/img/icons/teaser.gif" style="width:1.5rem"> <strong>Click to view Ground Truth and MLLM\'s answer!</strong>';
+    } else {
+        answerElement.style.display = "block";
+        element.innerHTML = '<img src="static/img/icons/teaser.gif" style="width:1.5rem"> <strong>Hide answer</strong>';
+  
+        if (window.innerWidth <= 768) {
+            // answerElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }
+}
+
+
+    </script>
+<script>
+    function toggleAnswer2(answerId, element) {
+        const answerElement = document.getElementById(answerId);
+    
+        if (answerElement.style.visibility === "hidden" || answerElement.style.visibility === "") {
+            answerElement.style.transition = "none";
+            answerElement.style.visibility = "visible";
+            answerElement.style.opacity = "1";
+            answerElement.style.maxHeight = "500px";
+            element.innerHTML = '<img src="static/img/icons/teaser.gif" style="width:1.5rem"> <strong>Hide answer</strong>';
+        } else {
+            // Hide the answer instantly
+            answerElement.style.transition = "none";
+            answerElement.style.opacity = "0";
+            answerElement.style.maxHeight = "0";
+            answerElement.style.visibility = "hidden";
+            element.innerHTML = '<img src="static/img/icons/teaser.gif" style="width:1.5rem"> <strong>Click to view Ground Truth and MLLM\'s answer!</strong>';
+        }
+    }
+    </script>
+        </div>
+        <d-figure id="fig-teaser">
+            <figure>
+                <img data-zoomable="" draggable="false" src="static/img/teaser.png" alt="Visual-Spatial Intelligence Teaser">
+                <figcaption>
+                    <strong>Figure 1:</strong> (Left) Everyday navigation instructions that require spatial intelligence. To execute these instructions, a navigation
+                            agent must perceive and reason about space layout, scale, agent-object relative orientations, and environmental state. As
+                            the first benchmark to evaluate navigation agents' spatial intelligence, NavSpace collects navigation instructions covering
+                            the above six types of spatial-intelligence capabilities. (Right) Evaluation results on NavSpace about navigation agents
+                            driven by multimodal large models and navigation models. We further propose SNav model to serve as a strong baseline.
+                </figcaption>
+            </figure>
+        </d-figure>
+
+    
+        <p class="text abstract">
+            We introduce the NavSpace benchmark, which
+            contains six task categories and 1,228 trajectory-instruction
+            pairs designed to probe the spatial intelligence of navigation
+            agents. On this benchmark, we comprehensively evaluate 22
+            navigation agents, including state-of-the-art navigation models
+            and multimodal large language models. The evaluation results
+            lift the veil on spatial intelligence in embodied navigation.
+            Furthermore, we propose SNav, a new spatially intelligent
+            navigation model. SNav outperforms existing navigation agents
+            on NavSpace and real robot tests, establishing a strong baseline
+            for future work.
+            <br>
+        </p>
+
+    <div class="icon-row">
+        <a href="#NavSpace-Introduction" class="icon-link">
+            <img src="static/img/icons/benchmark.svg" alt="Visual Representation Logo" class="icon">
+            NavSpace<br>Introduction
+        </a>
+        <a href="#NavSpace-Evaluation" class="icon-link">
+            <img src="./static/img/icons/evaluation.svg" alt="Evaluation Logo" class="icon">
+            Evaluation<br>Protocol
+        </a>
+        <a href="#NavSpace-Leaderboard" class="icon-link">
+            <img src="/static/img/icons/leaderboard_black.svg" alt="Leaderboard Logo" class="icon">
+            NavSpace<br>Leaderboard
+        </a>
+        <a href="#Discussion" class="icon-link">
+            <img src="./static/img/icons/speech.svg" alt="Speech Logo" class="icon">
+            Results<br>Discussion
+        </a>
+        <a href="#overall-video" class="icon-link">
+            <img src="static/img/icons/video.svg" alt="Vision Logo" class="icon">
+            Overall Introduction<br>Video
+        </a>
+    </div>
+
+
+        <p class="click-hint2" style="width: 85%;">
+            <img src="static/img/icons/click.gif" style="width: 1.5rem">
+            <strong>Click to jump to each section.</strong>
+        </p>
+        
+
+        <hr>
+
+        <div id='NavSpace-Introduction' class="vsi-benchmark">
+            
+            <div id="sec:vsi-overview" class="sub-section">
+                <h1 class="text">NavSpace Introduction</h1>
+
+                    <p class="text" align="justify">
+                        <p class="text" align="justify">
+                        <strong>Benchmark Overview:</strong> 
+                        We introduce a novel benchmark, NavSpace. We begin by conducting a questionnaire survey to identify key
+                        categories of spatial intelligence essential for navigation tasks. The six most frequently selected categories include Vertical
+                        Perception, Precise Movement, Viewpoint Shifting, Spatial Relationship, Environment State, and Space Structure.
+                        To enable large-scale data collection for these categories, we design a large model assisted platform and a annotation
+                        pipeline: Trajectory Collection: annotators teleoperate agents to navigate within the photo-realistic scenes to record
+                        navigation trajectories; Instruction Annotation: annotators compose navigation instructions based on the requirements
+                        and the information analyzed by MLLM; and Human CrossValidation: a separate annotator replays the trajectory to ensure
+                        instruction accuracy and consistency. Following this pipeline, we collect a total of 1228 navigation trajectory-instruction pairs for NavSpace benchmark.
+                        </p>
+                    <d-figure id="fig-task-demo" >
+                        <figure>
+                            <img data-zoomable="" draggable="false" src="static/img/task-demo.png" alt="benchmark category">
+                            <figcaption style="text-align: center; margin-top: 20px;">
+                                <strong>Figure 2: Instruction Categories in NavSpace. </strong> 
+                                These six categories were determined based on the questionnaire survey results. Every navigation trajectory and instruction was collected manually from HM3D scene datasets through our designed platform.
+                            </figcaption>
+                        </figure>
+                    </d-figure>
+                    <d-figure id="fig-bench-stats">
+                        <figure>
+                            <img data-zoomable="" draggable="false" src="static/img/benchmark-stats.png" alt="benchmark category" style="width: 90%; height: auto; display: block; margin: 0 auto;">
+
+
+            
+                            <figcaption style="text-align: center; margin-top: 20px;">
+                                <strong>Figure 3: Visualization of NavSpace Statistics. </strong> 
+                            </figcaption>
+                        </figure>
+                    </d-figure>
+                    
+            </div>
+            <div id="vsi-construct" class="sub-section">
+                
+
+                    <p class="text" align="justify"><strong>NavSpace Construction:</strong>
+                        We designed a two-part survey to identify navigation instructions most indicative of spatial intelligence. First, participants reviewed a definition of spatial intelligence and confirmed comprehension. Then, they evaluated 17 candidate instruction types, selecting up to six that aligned with the definition. From 512 responses, 457 valid ones were retained, with the top six categories identified as Vertical Perception, Precise Movement, Viewpoint Shifting, Spatial Relationship, Environment State, and Space Structure. To collect navigation trajectories, we built a platform based on Habitat 3.0 and HM3D scenes, integrating a front-end annotation webpage with a simulator-linked backend. Annotators teleoperated agents in first-person view after familiarization, recording RGB frames, actions, and coordinates according to specified categories. After recording, GPT-5 was used to analyze trajectories, combining navigation data and sampled visual observations to generate candidate instructions. Annotators then refined and finalized instructions. For quality assurance, cross-validation was applied: each instruction had to be executed by a different annotator. Successful navigation to the intended goal validated the instruction; otherwise, it was discarded and re-annotated. This process ensured that collected trajectories and instructions were both diverse in spatial reasoning types and reliable for downstream navigation evaluation. </p>
+
+                    <d-figure id="fig-bench-pipeline" >
+                        <figure>
+                            <img data-zoomable="" draggable="false" src="static/img/benchmark_construction.png" alt="benchmark category">
+                            <figcaption>
+                                <p align="justify"><strong>Figure 4: Construction pipeline of NavSpace.</strong> (1) Questionnaire Survey: identify which forms of navigation instruction best
+                                    reflect spatial intelligence. (2) Trajectory Collection: teleoperate agents in a simulated environment to record trajectories. (3)
+                                    Instruction Annotation: use large-model-assisted analysis to create navigation instructions requiring spatial-intelligence. (4)
+                                    Human cross-validation: manually review and validate the annotated instructions to ensure correctness and executability.
+                                    </p>
+                            </figcaption>
+                        </figure>
+                    </d-figure>
+
+            </div>
+        <div id="NavSpace-Evaluation" class="vsi-evaluation">
+            <h1 class="text">Evaluation on NavSpace</h1>
+                    <script type="text/javascript" id="MathJax-script" async
+                    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+                    </script>
+            <p class="text" align="justify"><strong>Evaluation Setup</strong>:
+                Environment and Metrics. NavSpace takes Habitat 3.0 as the simulator to conduct the evaluation. Evaluation scenes are selected from the HM3D datasets. At each step, the agent
+                can only select one action: move forward 0.25m, turn left 30°, turn right 30°, or stop. Following previous instruction
+                navigation benchmarks, we employ the following widely used evaluation metrics: Navigation Error (NE), Oracle Success Rate (OS), Success Rate (SR).
+            </p>
+        
+            <!--
+            <div class="formula">
+                $$\text{MRA} = \frac{1}{10} \sum_{\theta \in C} \mathbb{1}\left(\frac{| \hat{y} - y |}{y} < 1 - \theta\right)$$
+            </div>
+            -->
+        
+            <p class="text" align="justify">
+                We conduct a comprehensive evaluation of existing multimodal large models and navigation models. These models can be categorized into the following five types:
+            </p>
+            <ul class="text" style="margin-left: -7.00em; padding-left: 0; list-style-position: inside;">
+                <li>Chance Level Baselines: Chance Level (Random) is the performance from random guessing among four navigation actions (25% for each). Chance Level (Frequency) refers to performing navigation actions based on the action occurrence frequencies observed in the trajectories of the NavSpace benchmark.</li>
+                <li>Open-source MLLMs: We selected the multimodal large language models Qwen2.5-VL and LLaVA-Video, which are widely used as backbone models in navigation. Besides, we also test GLM-4.5V and GLM-4.1V-Thinking released recently.</li>
+                <li>Proprietary MLLMs: We chose the latest GPT models recently released by OpenAI, including GPT-5 and GPT5 Mini, as well as the previous-generation flagship model GPT-4o. In addition, we also tested Google's latest models, Gemini 2.5 Pro and Gemini 2.5 Flash.</li>
+                <li>Lightweight Navigation Models: The lightweight navigation models we selected include waypoint predictor-based models, such as BEVBert and ETPNav, as well as waypoint predictor-free models like CMA and Seq2Seq. The model parameters of these lightweight navigation models are less than 100M. They usually only complete one type of instruction navigation task, like VLN.</li>
+                <li>Navigation Large Models: The navigation large models that have been open-sourced so far include NaVid, NaVILA, and StreamVLN. They are all 7B-parameter multimodal models fine-tuned for instruction navigation tasks. They predict navigation actions end-to-end from solely past RGB observations.</li>
+            </ul>
+                   
+            
+            <p class="text" align="justify"><strong>Performances on NavSpace</strong>:
+                NavSpace poses a major challenge for current models. Open-source MLLMs achieve less than 10% success, near chance level, while proprietary MLLMs perform slightly better, with GPT-5 leading but still under 20%. This indicates that existing MLLMs are far from reliable navigation agents for spatial intelligence tasks. Lightweight navigation models such as BEVBert and ETPNav also fail on NavSpace, whereas larger navigation models like NaVid and StreamVLN outperform GPT-5 and show preliminary spatial reasoning ability. Our proposed model, SNav, surpasses both state-of-the-art navigation models and advanced MLLMs, establishing a strong new baseline. Ablation results further demonstrate that its instruction-generation pipeline is key to enhancing spatial intelligence performance.
+            </p>
+            <d-figure id="fig-eval-bench" >
+                <figure>
+                    <img data-zoomable="" draggable="false" src="static/img/evaluation-bench.png" alt="benchmark category">
+                    <figcaption>
+                        <p align="justify"><strong>Table 1: Quantative performances on NavSpace.</strong> Bold color indicates the best result among all models</p>
+                    </figcaption>
+                </figure>
+            </d-figure>
+
+            <p class="text" align="justify"><strong>Our SoTA Model: SNav</strong>:
+                The architecture of the SNav incorporates three fundamental
+                components: the Vision Encoder v(·), the Projector p(·),
+                and the Large Language Model (LLM) f(·). In processing
+                an RGB video input, the Vision Encoder generates visual
+                feature representations from sampled frames, denoted as
+                Zv = v({I1,I2...It}). These representations are subsequently
+                transformed by the MLP Projector into the LLM's semantic
+                space, yielding a sequence of visual tokens Hv = p(Zv).
+                The LLM f(·) then performs auto-regressive predictions by
+                integrating these visual tokens Hv with texual tokens X, which
+                are derived from the task instruction L. For implementation,
+                SigLIP serves as the Vision Encoder, a 2-layer MLP
+                functions as the Projector, and Qwen2 acts as the LLM.
+                The SNav model is initialized from LLaVA-Video 7B.
+                Then we follow the previous work to conduct navigation
+                finetuning through co-training with three tasks. These
+                tasks include Navigation Action Prediction, Trajectory-based
+                Instruction Generation, and General Multimodal Data Recall.
+                After this, we obtain the vanilla SNav model.
+            </p>
+
+            <p class="text" align="justify"><strong>Spatial Intelligence Enhancement</strong>:</p>
+            <ul class="text" style="margin-left: -7.00em; padding-left: 0; list-style-position: inside;">
+                <li><strong>Cross-floor Navigation</strong>: We select the R2R trajectories that
+                    are likely to cross floors by thresholding the height difference
+                    between the start and end. For each selected trajectory, we
+                    place the agent at the start position in the Habitat and follow
+                    a shortest-path planner to the goal while recording RGB
+                    camera observations. We label a trajectory as floor-crossing
+                    if GPT-5 detects stairs in at least three recorded frames.
+                    Following the floor-segmentation method HOV-SG, we
+                    assign floor labels to the start and end points, and combine
+                    these with Habitat's total-floor count to produce vertical-space
+                    annotations. With these annotations, GPT-5 can restyle raw
+                    instructions like “Walk up the stairs ...” into “Walk up to the
+                    top floor ...” or "Walk up to the third floor ..."
+                    </li>
+                <li><strong>Precise Movement</strong>: We randomly sample start and goal points
+                    in MP3D scenes and use the shortest-path planner in the
+                    Habitat simulator to compute a path. After filtering trajectory
+                    steps, we can obtain trajectories of the desired length (e.g.,
+                    20-60 steps). We follow each path in the simulator and record
+                    the discrete navigation actions (i.e., turn left 30°, turn right
+                    30°, move forward 0.25m, and stop) . By merging consecutive
+                    actions of the same type, we produce concise movement
+                    descriptions such as "move forward 3 m, turn right 60°, move
+                    forward 2 m". Finally, GPT-5 paraphrases these movement
+                    descriptions into natural-language navigation instructions. For
+                    example, "Please walk forward 3 meters first, then turn right
+                    60°, and then continue forward 2 meters".
+                    </li>
+                <li><strong>Environment State Inference</strong>: We first extract start-end point
+                    pairs and their corresponding navigation instructions from the
+                    R2R dataset. For each pair, we use a shortest-path planner
+                    to generate the trajectory and save the RGB frames observed
+                    along that path. We then query GPT-5 with the first and last
+                    frames of each trajectory to infer three information: observable
+                    objects, unobservable objects, and a detailed description.
+                    Given that this category of instructions often follows an
+                    "if. . . otherwise. . . " structure, we design a group of templates
+                    that combine these multimodal observations with the original
+                    instructions to create new instructions. Two template patterns
+                    are: (1) "Original_instruction; if [visible_object in last frame]
+                    then stop at [last-frame stop location], otherwise go to
+                    [scene description inferred from first frame]", and (2) "If
+                    [fabricated_object detected in first frame] then stop where you
+                    are, otherwise follow Original_instruction and stop at [lastframe
+                    stop location]." We instantiate five template categories
+                    covering the common if/otherwise cases, and use GPT-5
+                    to rewrite all instructions according to these templates to
+                    generate our training data.
+                    </li>
+                <li><strong>Spatial Relationship</strong>: We applied regular expressions to
+                    the instructions in the R2R dataset to select those containing
+                     ordinal phrases (e.g., "first room", "first door", "second room",
+                    "second door", "third room", "third door"). We also identified
+                    instructions that express multi-object relations by searching
+                    for words such as "between", "along", and "across".
+                    </li>
+            </ul>
+
+            <d-figure id="fig-enhancement" >
+                <figure>
+                    <img data-zoomable="" draggable="false" src="static/img/fig-enhancement.png" alt="benchmark category">
+                    <figcaption>
+                        <p align="justify"><strong>Figure 5: Spatial Intelligence Enhancement.</strong> </p>
+                    </figcaption>
+                </figure>
+            </d-figure>
+
+            <p id="real-world-tests" class="text" align="justify"><strong>Real World Tests</strong>:
+                In the real-world test, we compare our method against two
+                leading navigation large models, NaVid and NaVILA, across
+                office, campus, and outdoor environments. The test covers
+                five categories of spatially intelligent navigation instructions
+                (excluding vertical perception). Our experimental platform is
+                the AgiBot Lingxi D1 quadruped, which is equipped with
+                a monocular RGB camera and motion-control APIs. Upon
+                receiving a navigation instruction, the robot transmits the
+                RGB observation to the navigation model hosted on a remote
+                server with an NVIDIA A100 GPU; the model then predicts
+                actions and calls the D1 motion API to execute them.
+            </p>
+
+            <d-figure id="fig-real-world" >
+                <figure>
+                    <img data-zoomable="" draggable="false" src="static/img/real-world-tests.png" alt="benchmark category">
+                    <figcaption>
+                        <p align="justify"><strong>TABLE II: Real world experiment results.</strong> </p>
+                    </figcaption>
+                </figure>
+            </d-figure>
+
+
+            <!-- VSI-Bench Leaderboard Section -->
+        <div id="NavSpace-Leaderboard" class="vsi-leaderboard">
+            <h1 class="text">NavSpace Leaderboard</h1>
+            
+            <div class="leaderboard-container">
+                <div class="leaderboard-header">
+                    <p class="text" align="justify">
+                        To include your model in the leaderboard, please email <a href="mailto:NavSpace@163.com"><strong>NavSpace@163.com</strong></a> with evaluation logs and setups.
+                    </p>
+                </div>
+
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th data-column-index="0">Model</th>
+                            <th data-column-index="1">LLM Params</th>
+                            <th data-column-index="2" style="display:none">Frames</th>
+                            <th data-column-index="3" style="display:none">Date</th>
+                            <th data-column-index="4">Avg Success Rate(%).</th>
+                            <th data-column-index="5">Vertical Perception(SR)</th>
+                            <th data-column-index="6">Precise Movement(SR)</th>
+                            <th data-column-index="7">Viewpoint Shifting(SR)</th>
+                            <th data-column-index="8">Spatial Relationship(SR)</th>
+                            <th data-column-index="9">Environment State(SR)</th>
+                            <th data-column-index="10">Space Structure(SR)</th>
+                            <th data-column-index="11" style="display:none"></th>
+                            <th data-column-index="12" style="display:none"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <tr class="section-divider">
+                            <td colspan="13" class="section-header">Chance Level Baselines</td>
+                        </tr>
+                        <tr class="baseline-row">
+                            <td>Chance-level (Random)</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>2025-09-25</td>
+                            <td>4.2</td>
+                            <td>4.3</td>
+                            <td>1.0</td>
+                            <td>3.9</td>
+                            <td>4.2</td>
+                            <td>6.0</td>
+                            <td>5.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="baseline-row">
+                            <td>Chance-level (Frequency)</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>2024-11-15</td>
+                            <td>8.3</td>
+                            <td>11.5</td>
+                            <td>3.5</td>
+                            <td>11.6</td>
+                            <td>7.5</td>
+                            <td>6.5</td>
+                            <td>9.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="section-divider">
+                            <td colspan="13" class="section-header">Open-source MLLMs</td>
+                        </tr>
+                        <tr>
+                            <td>LLaVA-Video-7B <span class="model-badge open-badge">Open</span></td>
+                            <td>7B</td>
+                            <td>64</td>
+                            <td>2025-09-26</td>
+                            <td>6.7</td>
+                            <td>7.7</td>
+                            <td>3.5</td>
+                            <td>6.8</td>
+                            <td>11.3</td>
+                            <td>6.5</td>
+                            <td>4.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>GLM-4.1V-Thinking-9B <span class="model-badge open-badge">Open</span></td>
+                            <td>9B</td>
+                            <td>64</td>
+                            <td>2025-09-26</td>
+                            <td>6.5</td>
+                            <td>7.7</td>
+                            <td>2.0</td>
+                            <td>8.2</td>
+                            <td>11.3</td>
+                            <td>7.0</td>
+                            <td>3.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>GLM-4.5V 106B <span class="model-badge open-badge">Open</span></td>
+                            <td>106B</td>
+                            <td>64</td>
+                            <td>2025-09-26</td>
+                            <td>7.6</td>
+                            <td>7.7</td>
+                            <td>2.5</td>
+                            <td>7.2</td>
+                            <td>9.4</td>
+                            <td>12.0</td>
+                            <td>6.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Qwen2.5-VL 7B <span class="model-badge open-badge">Open</span></td>
+                            <td>7B</td>
+                            <td>64</td>
+                            <td>2025-09-26</td>
+                            <td>7.5</td>
+                            <td>6.3</td>
+                            <td>2.5</td>
+                            <td>7.7</td>
+                            <td>9.4</td>
+                            <td>8.5</td>
+                            <td>10.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Qwen2.5-VL 72B <span class="model-badge open-badge">Open</span></td>
+                            <td>72B</td>
+                            <td>64</td>
+                            <td>2025-09-26</td>
+                            <td>7.0</td>
+                            <td>9.1</td>
+                            <td>3.0</td>
+                            <td>5.3</td>
+                            <td>6.1</td>
+                            <td>8.5</td>
+                            <td>10.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="section-divider">
+                            <td colspan="13" class="section-header">Proprietary MLLMs</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>GPT-4o <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>7.7</td>
+                            <td>10.1</td>
+                            <td>4.0</td>
+                            <td>3.9</td>
+                            <td>9.9</td>
+                            <td>8.5</td>
+                            <td>9.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>GPT-5 Mini <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>10.9</td>
+                            <td>15.4</td>
+                            <td>4.0</td>
+                            <td>5.8</td>
+                            <td>12.3</td>
+                            <td>14.0</td>
+                            <td>14.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>GPT-5 <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>14.2</td>
+                            <td>18.3</td>
+                            <td>3.0</td>
+                            <td>12.6</td>
+                            <td>17.5</td>
+                            <td>17.5</td>
+                            <td>16.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Gemini 2.5 Flash <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>6.5</td>
+                            <td>3.8</td>
+                            <td>4.0</td>
+                            <td>4.8</td>
+                            <td>7.5</td>
+                            <td>11.5</td>
+                            <td>7.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Gemini 2.5 Pro <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>11.2</td>
+                            <td>23.6</td>
+                            <td>4.0</td>
+                            <td>9.2</td>
+                            <td>7.1</td>
+                            <td>13.0</td>
+                            <td>10.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="section-divider">
+                            <td colspan="13" class="section-header">Lightweight Nav Models</td>
+                        </tr>
+                        <tr>
+                            <td>Seq2Seq <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>-</td>
+                            <td>16</td>
+                            <td>2025-09-26</td>
+                            <td>0.7</td>
+                            <td>1.0</td>
+                            <td>0.0</td>
+                            <td>0.0</td>
+                            <td>1.4</td>
+                            <td>1.5</td>
+                            <td>0.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>CMA <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>1.8</td>
+                            <td>0.5</td>
+                            <td>0.0</td>
+                            <td>1.4</td>
+                            <td>2.8</td>
+                            <td>5.5</td>
+                            <td>0.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>HPN+DN <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>8.5</td>
+                            <td>8.7</td>
+                            <td>3.5</td>
+                            <td>10.6</td>
+                            <td>11.3</td>
+                            <td>13.0</td>
+                            <td>4.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>VLN↺BERT <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>3.8</td>
+                            <td>0.5</td>
+                            <td>1.5</td>
+                            <td>3.4</td>
+                            <td>0.0</td>
+                            <td>4.0</td>
+                            <td>13.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Sim2Sim <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>6.5</td>
+                            <td>0.5</td>
+                            <td>6.0</td>
+                            <td>8.7</td>
+                            <td>0.0</td>
+                            <td>7.0</td>
+                            <td>16.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>ETPNav <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>4.3</td>
+                            <td>3.4</td>
+                            <td>2.5</td>
+                            <td>4.8</td>
+                            <td>3.3</td>
+                            <td>9.0</td>
+                            <td>2.5</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>BEVBert <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>4.6</td>
+                            <td>4.3</td>
+                            <td>2.0</td>
+                            <td>7.2</td>
+                            <td>3.8</td>
+                            <td>6.5</td>
+                            <td>4.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="section-divider">
+                            <td colspan="13" class="section-header">Navigation Large Models</td>
+                        </tr>
+                        <tr>
+                            <td>NaVid <span class="model-badge navllm">NavLLM</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>20.0</td>
+                            <td>23.1</td>
+                            <td>7.0</td>
+                            <td>22.7</td>
+                            <td>24.1</td>
+                            <td>33.0</td>
+                            <td>10.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>NaVILA <span class="model-badge navllm">NavLLM</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>6.0</td>
+                            <td>3.4</td>
+                            <td>2.5</td>
+                            <td>5.3</td>
+                            <td>3.8</td>
+                            <td>8.0</td>
+                            <td>13.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>StreamVLN <span class="model-badge navllm">NavLLM</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>19.2</td>
+                            <td>23.1</td>
+                            <td>8.0</td>
+                            <td>21.3</td>
+                            <td>24.5</td>
+                            <td>28.0</td>
+                            <td>10.0</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SNav(Ours)</strong> <span class="model-badge navllm">NavLLM</span></td>
+                            <td>-</td>
+                            <td>32</td>
+                            <td>2025-09-26</td>
+                            <td>26.0</td>
+                            <td><strong>28.8</strong></td>
+                            <td><strong>12.4</strong></td>
+                            <td><strong>23.7</strong></td>
+                            <td><strong>32.5</strong></td>
+                            <td><strong>41.5</strong></td>
+                            <td><strong>17.0</strong></td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+            <div id='Discussion' class="viusal-representation-block">
+            <h1 class="text">Discussion</h1>
+                
+                <p class="text" align="justify">
+                    To better understand when and why models succeed or fail and to elucidate the facets of visual-spatial intelligence they possess, we examine how MLLMs think in space linguistically.
+                </p>
+
+                              
+                </d-figure>
+                <p class="text" align="justify">
+                    <strong>Do existing spatial intelligence benchmarks truly reflect a
+                        model's capability in embodied navigation?</strong>:
+                        We observed a clear phenomenon: MLLMs (i.e., LLaVA-Video, Qwen2.5-
+                        VL, and GPT-4o) that perform reasonably well on existing
+                        spatial intelligence benchmarks such as VSI-Bench,
+                        SpatialBench, and MindCube are almost unable
+                        to complete the navigation tasks in NavSpace. This may 
+                        be because the existing benchmarks are static evaluations,
+                        where a model only needs to predict a deterministic numerical
+                        answer or choose from multiple options based on the given
+                        observations. In contrast, our benchmark requires the model
+                        to take dynamic actions in the scene based on its spatial
+                        perception and reasoning. For embodied tasks, translating
+                        spatial perception into precise movement is more important
+                        than one-off perceptual judgments. Therefore, our benchmark
+                        better captures the core demands of embodied navigation.
+                </p>
+
+                <d-figure id="fig-case-study" >
+                    <figure>
+                        <img data-zoomable="" draggable="false" src="static/img/case-study-v2.png" alt="benchmark category" style="width: 90%; display: block; margin: 0 auto;">
+                        <figcaption style="text-align: center; margin-top: 20px;">
+                            <strong>Figure 6</strong>: Case study about GPT-5 (Left) and StreamVLN (Right) on NavSpace. 
+                        </figcaption>
+                    </figure>
+                </d-figure>
+
+                <p class="text" align="justify">
+                    <strong>Do current MLLMs demonstrate emergent spatial intelligence for embodied navigation?</strong>:
+                    To investigate why
+                    MLLMs perform poorly on NavSpace, we query GPT-5
+                    with questions requiring spatial intelligence to re-perceive
+                    its erroneous trajectories. From case analysis, we found
+                    that GPT-5 sometimes can correctly answer questions about
+                    precise distance, viewpoint shift, or environmental state.
+                    However, when it predicts concrete navigation actions, the
+                    actual actions are inconsistent with its initial perception.
+                    One example of viewpoint shift is shown in Figure 7 (Left).
+                    As actions are executed, GPT-5's intermediate perceptions
+                    also sometimes contradict its original observations. Overall,
+                    beyond limitations in spatial reasoning, errors in reasoning
+                    from perception to action, and inconsistencies in perception
+                    across multiple frames are the main causes of MLLM's
+                    low success rate on NavSpace. These findings indicate that
+                    even the current flagship MLLMs have not yet demonstrated
+                    emergent spatial intelligence in embodied navigation.
+                </p>
+
+            </div>
+
+                <p class="text" align="justify">
+        
+                    <strong>Can lightweight navigation models effectively execute spatial intelligence navigation instructions?</strong>:
+                    Although lightweight navigation models show competitive performance
+                    on certain instruction navigation tasks, they poorly generalize
+                    to NavSpace. Case analysis shows they tend to latch onto
+                    objects and actions mentioned in the NavSpace instructions
+                    and perform only shallow semantic-to-action inference. Perhaps this semantic-to-action mapping can work for some VLN
+                    tasks, but it fails to succeed on NavSpace. We also found that,
+                    although lightweight navigation models like BEVBert and
+                    ETPNav outperform NaVid and StreamVLN on VLN tasks,
+                    their success rates on NavSpace are far lower than theirs,
+                    which further indicates that lightweight navigation models
+                    do not truly understand spatial relations during navigation.
+                </p>
+
+                <p class="text" align="justify">
+                    <strong>How to improve the spatial intelligence of navigation models?</strong>:
+                    Benefiting from pretraining on internet-scale image-text
+                    corpora and open-source instruction navigation data, navigation large models can already satisfy a nontrivial fraction of
+                    the benchmark instructions. However, under a Q&A-based
+                    evaluation conducted along ground-truth trajectories, we
+                    observe that NaVid and StreamVLN perform poorly on
+                    questions about spatial scale, floor-level relations, and spatial
+                    structure. One example is shown in Figure 7 (Right). We
+                    hypothesize that these models primarily rely on general multimodal understanding and instruction-following capabilities
+                    and only incidentally succeed on a subset of spatial navigation
+                    instructions. This hypothesis is supported by their markedly
+                    worse performance on the Precise Movement and Space
+                    Structure instructions that depend less on visual semantic
+                    cues and more on spatial reasoning. Accordingly, future work
+                    should pursue, in parallel, (1) substantial improvements in
+                    spatial perception and (2) enhanced inferential mechanisms
+                    that translate spatial perception into action decisions.
+
+                </p>
+            
+                
+        <div id="conclusion" style="position: relative; margin-top: 40px; margin-bottom: 0px;">
+            <h2 class="text" style="margin-top:0px; margin-bottom:10px">Conclusion</h2>
+            <p class="text" align="justify">
+                In this work, we present NavSpace, the first spatial intelligence benchmark for instruction-based navigation. 
+                NavSpace is constructed from carefully designed questionnaire surveys and the manual curation of 1,228 high-quality trajectory-instruction pairs, enabling systematic evaluation of navigation agents. 
+                Through extensive experiments on NavSpace, we conduct a thorough assessment of 22 state-of-the-art agents and derive several key insights into their strengths and limitations. 
+                Building on these findings, we introduce SNav, a spatially intelligent navigation model that achieves superior performance over existing approaches, establishing a strong baseline on NavSpace as well as in real-robot evaluations.
+
+            </p>
+        </div>
+
+        <div id="overall-video" style="position: relative; margin-top: 50px; margin-bottom: 40px;">
+            <h2 class="text" style="margin-top:0px; margin-bottom:20px;">Overall Introduction Video</h2>
+            <div style="display: flex; justify-content: center; align-items: center; margin: 20px 0;">
+                <div style="
+                    background: #87CEEB;
+                    padding: 10px;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    max-width: 95%;
+                    width: fit-content;
+                ">
+                    <video 
+                        controls 
+                        style="
+                            width: 100%;
+                            max-width: 1200px;
+                            height: auto;
+                            border-radius: 10px;
+                            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                            display: block;
+                        "
+                        poster="static/img/preview.png"
+                    >
+                        <source src="navspace_new.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+            <p class="text" style="text-align: center; color: #666; font-style: italic; margin-top: 15px;">
+                NavSpace: How Navigation Agents Follow Spatial Intelligence Instructions
+            </p>
+        </div>
+
+        <div id="bibtex" style="position: relative; margin-top: 40px; margin-bottom: 0px; color: gray;">
+            <h2 class="text" style="margin-top:0px; margin-bottom:10px">BibTeX</h2>
+            <!-- <p class="bibtex">
+                @article{yang2024think,<br>
+                    title={{Thinking in Space: How Multimodal Large Language Models See, Remember and Recall Spaces}},<br>
+                    author={Yang, Jihan and Yang, Shusheng and Gupta, Anjali and Han, Rilyn and Fei-Fei, Li and Xie, Saining},<br>
+                    year={2024},<br>
+                    journal={arXiv preprint},<br>
+                }
+            </p> -->
+            <pre><code>@article{yang2024think,
+    title={{Thinking in Space: How Multimodal Large Language Models See, Remember and Recall Spaces}},
+    author={Yang, Jihan and Yang, Shusheng and Gupta, Anjali W. and Han, Rilyn and Fei-Fei, Li and Xie, Saining},
+    year={2024},
+    journal={arXiv preprint arXiv:2412.14171},
+}</code></pre>
+        </div>
+
+    </div>
+
+
+
+<!-- Leaderboard Sorting JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const table = document.querySelector('.leaderboard-table');
+    if (!table) return; // Exit if table doesn't exist
+    
+    const thead = table.querySelector('thead');
+    const tbody = document.getElementById('leaderboard-body');
+    
+    // Default sort configuration: by 'Avg.' column (index 4), descending.
+    let sortConfig = {
+        columnIndex: 4, 
+        direction: 'desc'
+    };
+
+    const headers = thead.querySelectorAll('th[data-column-index]');
+
+    // Updates the visual indicators (▲/▼) on the table headers.
+    function updateSortIndicators() {
+        headers.forEach(h => {
+            const indicator = h.querySelector('.sort-indicator');
+            if (indicator) {
+                const hIndex = parseInt(h.dataset.columnIndex);
+                if (hIndex === sortConfig.columnIndex) {
+                    indicator.textContent = sortConfig.direction === 'asc' ? '▲' : '▼';
+                    h.classList.add('active');
+                } else {
+                    indicator.textContent = '';
+                    h.classList.remove('active');
+                }
+            }
+        });
+    }
+    
+    // Parses the 'LLM Params' column, converting values like '7B' or '500M' to numbers.
+    function parseParams(param) {
+        if (param === '-') return -1;
+        const value = parseFloat(param);
+        if (isNaN(value)) return -1;
+        if (param.toLowerCase().includes('b')) return value * 1e9;
+        if (param.toLowerCase().includes('m')) return value * 1e6;
+        return value;
+    }
+
+    // Generic comparison function for sorting. Handles strings, dates, params, and numbers.
+    function compareValues(valA, valB, index) {
+        // Column 0: Model name (string comparison)
+        if (index === 0) { 
+            return valA.localeCompare(valB);
+        }
+        // Column 1: LLM Params (special parsing)
+        if (index === 1) { 
+            return parseParams(valA) - parseParams(valB);
+        }
+        // Column 3: Date (date comparison)
+        if (index === 3) { 
+            return new Date(valA) - new Date(valB);
+        }
+
+        // Default: Numeric comparison for all other columns
+        const numA = parseFloat(valA);
+        const numB = parseFloat(valB);
+
+        const isNumA = !isNaN(numA);
+        const isNumB = !isNaN(numB);
+
+        if (isNumA && isNumB) return numA - numB;
+        if (isNumA) return 1; // Put non-numeric values ('-') at the bottom
+        if (isNumB) return -1;
+        return 0;
+    }
+
+    // Main function to sort the table body.
+    function sortTable() {
+        const direction = sortConfig.direction === 'asc' ? 1 : -1;
+        const allRows = Array.from(tbody.children);
+
+        const sections = [];
+        let currentSection = null;
+
+        allRows.forEach(row => {
+            if (row.classList.contains('section-header') || row.classList.contains('section-divider')) {
+                currentSection = { header: row, rows: [] };
+                sections.push(currentSection);
+            } else {
+                if (!currentSection) {
+                    currentSection = { header: null, rows: [] };
+                    sections.push(currentSection);
+                }
+                currentSection.rows.push(row);
+            }
+        });
+
+        const fragment = document.createDocumentFragment();
+
+        sections.forEach(section => {
+            const sortableRows = section.rows.slice();
+
+            sortableRows.sort((rowA, rowB) => {
+                const cellA = rowA.children[sortConfig.columnIndex];
+                const cellB = rowB.children[sortConfig.columnIndex];
+                const valA = cellA ? cellA.textContent.trim() : '';
+                const valB = cellB ? cellB.textContent.trim() : '';
+                return compareValues(valA, valB, sortConfig.columnIndex) * direction;
+            });
+
+            if (section.header) {
+                fragment.appendChild(section.header);
+            }
+            sortableRows.forEach(row => fragment.appendChild(row));
+        });
+
+        tbody.innerHTML = '';
+        tbody.appendChild(fragment);
+        updateSortIndicators();
+    }
+
+    // Add click listeners to all sortable headers.
+    headers.forEach(header => {
+        header.classList.add('sortable-header');
+        const indicator = document.createElement('span');
+        indicator.className = 'sort-indicator';
+        header.appendChild(indicator);
+
+        header.addEventListener('click', () => {
+            const columnIndex = parseInt(header.dataset.columnIndex);
+            // If clicking the same column, reverse direction.
+            if (sortConfig.columnIndex === columnIndex) {
+                sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                // Otherwise, switch to the new column and default to descending.
+                sortConfig.columnIndex = columnIndex;
+                sortConfig.direction = 'desc';
+            }
+            sortTable();
+        });
+    });
+
+    // Perform the initial sort when the page loads.
+    sortTable();
+});
+</script>
+
+    </body>
+</html>
