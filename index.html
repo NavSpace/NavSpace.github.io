@@ -110,10 +110,10 @@
         }
 
         .leaderboard-table th {
-            padding: 14px 12px;
+            padding: 8px 6px;
             text-align: center;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             letter-spacing: 0.025em;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
@@ -150,10 +150,11 @@
         }
 
         .leaderboard-table td {
-            padding: 12px;
+            padding: 6px 4px;
             border-bottom: 1px solid #e2e8f0;
             color: #4a5568;
             text-align: center;
+            font-size: 13px;
         }
         
         .leaderboard-table tbody tr {
@@ -168,7 +169,7 @@
             font-weight: 600;
             text-align: left;
             color: #2d3748;
-            padding-left: 20px;
+            padding-left: 8px;
         }
         
         .leaderboard-table td:nth-child(5) {
@@ -382,7 +383,7 @@
                             </span>
                             arXiv
                         </a>
-                        <a href="https://github.com" class="button" target="_blank">
+                        <a href="https://github.com/TidalHarley/NavSpace-How-Navigation-Agents-Follow-Spatial-Intelligence-Instructions" class="button" target="_blank">
                             <span class="icon is-small">
                                 <img src="static/img/icons/github.svg" alt="Github_logo" style="height: 1.5em;">
                             </span>
@@ -392,7 +393,7 @@
                             <span class="icon is-small">
                                 <img src="static/img/icons/huggingface.svg" alt="Hugging Face logo" style="height: 1.5em;">
                             </span>
-                            <span>SNav Model</span>
+                            <span>SNav Model(Coming Soon)</span>
                         </a>
                         <a href="#NavSpace-Leaderboard" class="button">
                             <span class="icon is-small">
@@ -414,7 +415,7 @@
             <div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
                 <!-- Authors Section -->
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <h3 style="font-size: 1.2em; margin-bottom: 15px;">Authors</h3>
+                    <h3 style="font-size: 1.2em; margin-bottom: 15px;"></h3>
                     <div style="line-height: 1.6; font-size: 0.85em; white-space: nowrap; overflow: hidden;">
                         <div style="margin-bottom: 5px;">
                             <a class="author-link" target="_blank">Haolin Yang</a><sup>1,2*</sup>, 
@@ -436,8 +437,8 @@
                 
                 <!-- Affiliations Section -->
                 <div style="text-align: center; margin-bottom: 15px;">
-                    <h3 style="font-size: 1.2em; margin-bottom: 10px;">Affiliations</h3>
-                    <p style="margin: 0; font-size: 0.85em; line-height: 1.4;">
+                    <h3 style="font-size: 1.2em; margin-bottom: 10px;"></h3>
+                    <p style="margin: 0; font-size: 0.75em; line-height: 1.4;">
                         <sup>1</sup><a href="https://cfcs.pku.edu.cn/" class="affiliation-link" target="_blank">CFCS, School of Computer Science, Peking University</a>&nbsp;&nbsp;&nbsp;
                         <sup>2</sup><a href="https://www.pku.edu.cn" class="affiliation-link" target="_blank">PKU-Agibot Lab</a>&nbsp;&nbsp;&nbsp;
                         <sup>3</sup><a href="https://www.shlab.org.cn/" class="affiliation-link" target="_blank">Shanghai AI Laboratory</a>
@@ -528,6 +529,43 @@ function toggleAnswer(answerId, element) {
         
 
         <hr>
+
+        <div id="overall-video" style="position: relative; margin-top: 50px; margin-bottom: 40px;">
+            <h2 class="text" style="margin-top:0px; margin-bottom:20px;">Overall Introduction Video</h2>
+            <div style="display: flex; justify-content: center; align-items: center; margin: 20px 0;">
+                <div style="
+                    background: #87CEEB;
+                    padding: 10px;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    max-width: 95%;
+                    width: fit-content;
+                ">
+                    <video 
+                        controls 
+                        preload="metadata"
+                        style="
+                            width: 100%;
+                            max-width: 1200px;
+                            height: auto;
+                            aspect-ratio: 16/9;
+                            object-fit: contain;
+                            border-radius: 10px;
+                            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                            display: block;
+                            background-color: #000;
+                        "
+                        poster="static/img/preview.png"
+                    >
+                        <source src="navspace_new.mp4" type="video/mp4">
+                        您的浏览器不支持视频播放。
+                    </video>
+                </div>
+            </div>
+            <p class="text" style="text-align: center; color: #666; font-style: italic; margin-top: 15px;">
+                NavSpace: How Navigation Agents Follow Spatial Intelligence Instructions
+            </p>
+        </div>
         
         <d-figure id="fig-teaser">
             <figure>
@@ -580,6 +618,8 @@ function toggleAnswer(answerId, element) {
                     </d-figure>
                     
             </div>
+
+            <template>
             <div id="vsi-construct" class="sub-section">
                 
 
@@ -597,6 +637,8 @@ function toggleAnswer(answerId, element) {
                     </d-figure>
 
             </div>
+            </template>
+
         <div id="NavSpace-Evaluation" class="vsi-evaluation">
             <h1 class="text">Evaluation on NavSpace</h1>
                     <script type="text/javascript" id="MathJax-script" async
@@ -633,19 +675,7 @@ function toggleAnswer(answerId, element) {
             <p class="text" align="justify"><strong>Our SoTA Model——SNav</strong>:
                 The architecture of the SNav incorporates three fundamental
                 components: the Vision Encoder v(·), the Projector p(·),
-                and the Large Language Model (LLM) f(·). In processing
-                an RGB video input, the Vision Encoder generates visual
-                feature representations from sampled frames, denoted as
-                Zv = v({I1,I2...It}). These representations are subsequently
-                transformed by the MLP Projector into the LLM's semantic
-                space, yielding a sequence of visual tokens Hv = p(Zv).
-                The LLM f(·) then performs auto-regressive predictions by
-                integrating these visual tokens Hv with texual tokens X, which
-                are derived from the task instruction L. For implementation,
-                SigLIP serves as the Vision Encoder, a 2-layer MLP
-                functions as the Projector, and Qwen2 acts as the LLM.
-                The SNav model is initialized from LLaVA-Video 7B.
-                Then we follow the previous work to conduct navigation
+                and the Large Language Model (LLM) f(·). We follow the previous work to conduct navigation
                 finetuning through co-training with three tasks. These
                 tasks include Navigation Action Prediction, Trajectory-based
                 Instruction Generation, and General Multimodal Data Recall.
@@ -668,43 +698,40 @@ function toggleAnswer(answerId, element) {
                 <figure>
                     <img data-zoomable="" draggable="false" src="static/img/fig-enhancement.png" alt="benchmark category">
                     <figcaption>
-                        <p align="justify"><strong>Figure 5: Spatial Intelligence Enhancement.</strong> </p>
+                        <p align="justify"><strong>Figure 4: Spatial Intelligence Enhancement.</strong> </p>
                     </figcaption>
                 </figure>
             </d-figure>
 
             <p id="real-world-tests" class="text" align="justify"><strong>Real World Tests</strong>:
-                In the real-world test, we compare our method against two
-                leading navigation large models, NaVid and NaVILA, across
+                In the real-world test, we test our model SNav across three different environments:
                 office, campus, and outdoor environments. The test covers
                 five categories of spatially intelligent navigation instructions
                 (excluding vertical perception). Our experimental platform is
                 the AgiBot Lingxi D1 quadruped, which is equipped with
-                a monocular RGB camera and motion-control APIs. Upon
-                receiving a navigation instruction, the robot transmits the
-                RGB observation to the navigation model hosted on a remote
-                server with an NVIDIA A100 GPU; the model then predicts
-                actions and calls the D1 motion API to execute them.
+                a monocular RGB camera and motion-control APIs. 
             </p>
 
             <d-figure id="fig-real-world" >
                 <figure>
                     <img data-zoomable="" draggable="false" src="static/img/real-world.png" alt="benchmark category">
                     <figcaption>
-                        <p align="justify"><strong>TABLE Ⅱ: Qualitative results from the real-world deployment of SNav.</strong> The evaluated instructions cover five categories
+                        <p align="justify"><strong>Figure 5: Qualitative results from the real-world deployment of SNav.</strong> The evaluated instructions cover five categories
                             proposed in NavSpace. The test environment includes the office, the campus building, and the outdoor area.</p>
                     </figcaption>
                 </figure>
             </d-figure>
 
+            <template>
             <d-figure id="fig-real-world" >
                 <figure>
                     <img data-zoomable="" draggable="false" src="static/img/real-world-tests.png" alt="benchmark category">
                     <figcaption>
-                        <p align="justify"><strong>TABLE Ⅲ: Quantitative Results of Real-World Experiments.</strong> </p>
+                        <p align="justify"><strong>TABLE 3: Quantitative Results of Real-World Experiments.</strong> </p>
                     </figcaption>
                 </figure>
             </d-figure>
+            </template>
 
 
             <!-- VSI-Bench Leaderboard Section -->
@@ -774,7 +801,7 @@ function toggleAnswer(answerId, element) {
                             <td colspan="13" class="section-header">Open-source MLLMs</td>
                         </tr>
                         <tr>
-                            <td>LLaVA-Video-7B <span class="model-badge open-badge">Open</span></td>
+                            <td>LLaVA-Video</td>
                             <td>7B</td>
                             <td>64</td>
                             <td>2025-09-26</td>
@@ -789,7 +816,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>GLM-4.1V-Thinking-9B <span class="model-badge open-badge">Open</span></td>
+                            <td>GLM-4.1V-Thinking </td>
                             <td>9B</td>
                             <td>64</td>
                             <td>2025-09-26</td>
@@ -804,7 +831,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>GLM-4.5V 106B <span class="model-badge open-badge">Open</span></td>
+                            <td>GLM-4.5V </td>
                             <td>106B</td>
                             <td>64</td>
                             <td>2025-09-26</td>
@@ -819,7 +846,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>Qwen2.5-VL 7B <span class="model-badge open-badge">Open</span></td>
+                            <td>Qwen2.5-VL</td>
                             <td>7B</td>
                             <td>64</td>
                             <td>2025-09-26</td>
@@ -834,7 +861,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>Qwen2.5-VL 72B <span class="model-badge open-badge">Open</span></td>
+                            <td>Qwen2.5-VL</td>
                             <td>72B</td>
                             <td>64</td>
                             <td>2025-09-26</td>
@@ -853,7 +880,7 @@ function toggleAnswer(answerId, element) {
                         </tr>
                         
                         <tr>
-                            <td>GPT-4o <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>GPT-4o </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -868,7 +895,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>GPT-5 Mini <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>GPT-5 Mini </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -883,7 +910,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>GPT-5 <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>GPT-5 </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -898,7 +925,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>Gemini 2.5 Flash <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>Gemini 2.5 Flash </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -913,7 +940,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>Gemini 2.5 Pro <span class="model-badge proprietary-badge">Proprietary</span></td>
+                            <td>Gemini 2.5 Pro </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -931,7 +958,7 @@ function toggleAnswer(answerId, element) {
                             <td colspan="13" class="section-header">Lightweight Nav Models</td>
                         </tr>
                         <tr>
-                            <td>Seq2Seq <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>Seq2Seq </td>
                             <td>-</td>
                             <td>16</td>
                             <td>2025-09-26</td>
@@ -946,7 +973,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>CMA <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>CMA </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -961,7 +988,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>HPN+DN <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>HPN+DN </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -976,7 +1003,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>VLN↺BERT <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>VLN↺BERT </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -991,7 +1018,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>Sim2Sim <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>Sim2Sim </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -1006,7 +1033,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>ETPNav <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>ETPNav </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -1021,7 +1048,7 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>BEVBert <span class="model-badge light-nav">Light-Nav</span></td>
+                            <td>BEVBert </td>
                             <td>-</td>
                             <td>32</td>
                             <td>2025-09-26</td>
@@ -1039,8 +1066,8 @@ function toggleAnswer(answerId, element) {
                             <td colspan="13" class="section-header">Navigation Large Models</td>
                         </tr>
                         <tr>
-                            <td>NaVid <span class="model-badge navllm">NavLLM</span></td>
-                            <td>-</td>
+                            <td>NaVid </td>
+                            <td>7B</td>
                             <td>32</td>
                             <td>2025-09-26</td>
                             <td>20.0</td>
@@ -1054,8 +1081,8 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>NaVILA <span class="model-badge navllm">NavLLM</span></td>
-                            <td>-</td>
+                            <td>NaVILA </td>
+                            <td>7B</td>
                             <td>32</td>
                             <td>2025-09-26</td>
                             <td>6.0</td>
@@ -1069,8 +1096,8 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td>StreamVLN <span class="model-badge navllm">NavLLM</span></td>
-                            <td>-</td>
+                            <td>StreamVLN </td>
+                            <td>7B</td>
                             <td>32</td>
                             <td>2025-09-26</td>
                             <td>19.2</td>
@@ -1084,8 +1111,8 @@ function toggleAnswer(answerId, element) {
                             <td>-</td>
                         </tr>
                         <tr>
-                            <td><strong>SNav(Ours)</strong> <span class="model-badge navllm">NavLLM</span></td>
-                            <td>-</td>
+                            <td><strong>SNav(Ours)</strong> </td>
+                            <td>7B</td>
                             <td>32</td>
                             <td>2025-09-26</td>
                             <td>26.0</td>
@@ -1103,102 +1130,8 @@ function toggleAnswer(answerId, element) {
             </div>
         </div>
 
-            <div id='Discussion' class="viusal-representation-block">
-            <h1 class="text">Discussion</h1>
-                
-                <p class="text" align="justify">
-                    To gain deeper insight into the reasons behind model performance, we conduct a case study analysis.
-                </p>
 
-                              
-                </d-figure>
-                <p class="text" align="justify">
-                    <strong>Do existing spatial intelligence benchmarks truly reflect a
-                        model's capability in embodied navigation?</strong>:
-                        We observe a striking phenomenon: MLLMs (e.g., LLaVA-Video, Qwen2.5-VL, GPT-4o) that perform reasonably well on static spatial intelligence benchmarks (VSI-Bench, SpatialBench, MindCube) struggle to complete navigation tasks in NavSpace. Existing benchmarks rely on static evaluations, where models predict numerical answers or select from fixed options based on given observations. In contrast, NavSpace requires models to take dynamic actions grounded in spatial perception and reasoning. For embodied tasks, translating spatial understanding into precise movement is more critical than one-off perceptual judgments. Thus, NavSpace more faithfully captures the core demands of embodied navigation.
-                </p>
-
-                <d-figure id="fig-case-study" >
-                    <figure>
-                        <img data-zoomable="" draggable="false" src="static/img/case-study-v2.png" alt="benchmark category" style="width: 90%; display: block; margin: 0 auto;">
-                        <figcaption style="text-align: center; margin-top: 20px;">
-                            <strong>Figure 6</strong>: Case study about GPT-5 (Left) and StreamVLN (Right) on NavSpace. 
-                        </figcaption>
-                    </figure>
-                </d-figure>
-
-                <p class="text" align="justify">
-                    <strong>Do current MLLMs demonstrate emergent spatial intelligence for embodied navigation?</strong>:
-                    To investigate why MLLMs perform poorly on NavSpace, we queried GPT-5 with spatial-intelligence questions to re-examine its erroneous trajectories. Case analyses reveal that GPT-5 can sometimes answer questions about distance, viewpoint shift, or environmental state correctly. However, when predicting concrete navigation actions, its actions often diverge from initial perceptions. For example, in viewpoint-shift scenarios (Figure 6, Left), intermediate perceptions during execution sometimes contradict earlier observations. Overall, beyond limitations in spatial reasoning, key failure modes include errors in translating perception into action and inconsistencies across frames. These findings suggest that even flagship MLLMs have not yet demonstrated emergent spatial intelligence in embodied navigation.
-                </p>
-
-            </div>
-
-                <p class="text" align="justify">
         
-                    <strong>Can lightweight navigation models effectively execute spatial intelligence navigation instructions?</strong>:
-                    Although lightweight navigation models show competitive performance
-                    on certain instruction navigation tasks, they poorly generalize
-                    to NavSpace. Case analysis shows they tend to latch onto
-                    objects and actions mentioned in the NavSpace instructions
-                    and perform only shallow semantic-to-action inference. Perhaps this semantic-to-action mapping can work for some VLN
-                    tasks, but it fails to succeed on NavSpace. We also found that,
-                    although lightweight navigation models like BEVBert and
-                    ETPNav outperform NaVid and StreamVLN on VLN tasks,
-                    their success rates on NavSpace are far lower than theirs,
-                    which further indicates that lightweight navigation models
-                    do not truly understand spatial relations during navigation.
-                </p>
-
-                <p class="text" align="justify">
-                    <strong>How to improve the spatial intelligence of navigation models?</strong>:
-                    Benefiting from pretraining on internet-scale image-text corpora and open-source navigation data, navigation large models can already handle a nontrivial portion of benchmark instructions. However, under Q&A-based evaluation along ground-truth trajectories, NaVid and StreamVLN perform poorly on questions involving spatial scale, floor-level relations, and spatial structure (see Figure 6, Right). We hypothesize that these models rely primarily on general multimodal understanding and instruction-following, succeeding only incidentally on some spatial navigation instructions. This is supported by their notably weaker performance on Precise Movement and Space Structure instructions, which depend less on semantic cues and more on spatial reasoning. Accordingly, future work should pursue both (1) improved spatial perception and (2) stronger inferential mechanisms to translate spatial perception into action decisions.
-
-                </p>
-            
-                
-        <div id="conclusion" style="position: relative; margin-top: 40px; margin-bottom: 0px;">
-            <h2 class="text" style="margin-top:0px; margin-bottom:10px">Conclusion</h2>
-            <p class="text" align="justify">
-                In this work, we present NavSpace, the first spatial intelligence benchmark for instruction-based navigation. 
-                NavSpace is constructed from carefully designed questionnaire surveys and the manual curation of 1,228 high-quality trajectory-instruction pairs, enabling systematic evaluation of navigation agents. 
-                Through extensive experiments on NavSpace, we conduct a thorough assessment of 22 state-of-the-art agents and derive several key insights into their strengths and limitations. 
-                Building on these findings, we introduce SNav, a spatially intelligent navigation model that achieves superior performance over existing approaches, establishing a strong baseline on NavSpace as well as in real-robot evaluations.
-
-            </p>
-        </div>
-
-        <div id="overall-video" style="position: relative; margin-top: 50px; margin-bottom: 40px;">
-            <h2 class="text" style="margin-top:0px; margin-bottom:20px;">Overall Introduction Video</h2>
-            <div style="display: flex; justify-content: center; align-items: center; margin: 20px 0;">
-                <div style="
-                    background: #87CEEB;
-                    padding: 10px;
-                    border-radius: 15px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                    max-width: 95%;
-                    width: fit-content;
-                ">
-                    <video 
-                        controls 
-                        style="
-                            width: 100%;
-                            max-width: 1200px;
-                            height: auto;
-                            border-radius: 10px;
-                            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-                            display: block;
-                        "
-                        poster="static/img/preview.png"
-                    >
-                        <source src="navspace_new.mp4" type="video/mp4">
-                    </video>
-                </div>
-            </div>
-            <p class="text" style="text-align: center; color: #666; font-style: italic; margin-top: 15px;">
-                NavSpace: How Navigation Agents Follow Spatial Intelligence Instructions
-            </p>
-        </div>
 
         <div id="bibtex" style="position: relative; margin-top: 40px; margin-bottom: 0px; color: gray;">
             <h2 class="text" style="margin-top:0px; margin-bottom:10px">BibTeX</h2>
