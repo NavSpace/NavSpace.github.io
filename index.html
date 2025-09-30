@@ -505,6 +505,10 @@ function toggleAnswer(answerId, element) {
 
 
     <div class="icon-row">
+        <a href="#overall-video" class="icon-link">
+            <img src="static/img/icons/video.svg" alt="Vision Logo" class="icon">
+            Overall Introduction<br>Video
+        </a>
         <a href="#NavSpace-Introduction" class="icon-link">
             <img src="static/img/icons/benchmark.svg" alt="Visual Representation Logo" class="icon">
             NavSpace<br>Introduction
@@ -517,14 +521,7 @@ function toggleAnswer(answerId, element) {
             <img src="/static/img/icons/leaderboard_black.svg" alt="Leaderboard Logo" class="icon">
             NavSpace<br>Leaderboard
         </a>
-        <a href="#Discussion" class="icon-link">
-            <img src="./static/img/icons/speech.svg" alt="Speech Logo" class="icon">
-            Results<br>Discussion
-        </a>
-        <a href="#overall-video" class="icon-link">
-            <img src="static/img/icons/video.svg" alt="Vision Logo" class="icon">
-            Overall Introduction<br>Video
-        </a>
+        
     </div>
 
 
@@ -652,7 +649,7 @@ function toggleAnswer(answerId, element) {
                     </script>
             <p class="text" align="justify"><strong>Evaluation Environment and Metrics</strong>:
                 NavSpace takes Habitat 3.0 as the simulator to conduct the evaluation. Evaluation scenes are selected from the HM3D datasets. At each step, the agent
-                can only select one action: move forward 0.25m, turn left 30°, turn right 30°, or stop. Following previous instruction
+                can only select one action. Following previous instruction
                 navigation benchmarks, we employ the following widely used evaluation metrics: Navigation Error (NE), Oracle Success Rate (OS), Success Rate (SR).
                 We conduct a comprehensive evaluation of existing multimodal large models and navigation models. These models can be categorized into the following five types:
             </p>
@@ -694,7 +691,7 @@ function toggleAnswer(answerId, element) {
                     </li>
                 <li><strong>Precise Movement</strong>: We sample start-goal pairs in MP3D scenes and compute shortest paths in Habitat. After filtering, trajectories of target length (20-60 steps) are retained, with discrete actions recorded (turn ±30°, move forward 0.25m, stop). Consecutive actions of the same type are merged into concise descriptions (e.g., “move forward 3 m, turn right 60°, move forward 2 m”). GPT-5 paraphrases these into natural-language instructions.
                     </li>
-                <li><strong>Environment State Inference</strong>: We extract start-end point pairs with navigation instructions from the R2R dataset and generate trajectories using a shortest-path planner, saving RGB frames along each path. GPT-5 is then queried with the first and last frames to infer three elements: observable objects, unobservable objects, and scene descriptions. Since this category often follows an if…otherwise… structure, we design five template categories that integrate multimodal observations with original instructions. Two representative patterns are: (1) Original_instruction; if [visible_object in last frame] then stop at [last-frame location], otherwise go to [scene description from first frame], and (2) If [fabricated_object in first frame] then stop, otherwise follow Original_instruction and stop at [last-frame location]. GPT-5 rewrites instructions according to these templates, producing high-quality training data for environment state inference.
+                <li><strong>Environment State Inference</strong>: We extract start-end point pairs with navigation instructions from the R2R dataset and generate trajectories using a shortest-path planner, saving RGB frames along each path. GPT-5 is then queried with the first and last frames to infer three elements: observable objects, unobservable objects, and scene descriptions. After observing the structure of this category, we design five template categories that integrate multimodal observations with original instructions. Two representative patterns are: (1) Original_instruction; if [visible_object in last frame] then stop at [last-frame location], otherwise go to [scene description from first frame], and (2) If [fabricated_object in first frame] then stop, otherwise follow Original_instruction and stop at [last-frame location]. GPT-5 rewrites instructions according to these templates, producing high-quality training data for environment state inference.
                     </li>
                 <li><strong>Spatial Relationship</strong>: We filter R2R instructions with regular expressions for ordinal phrases (“first room/door”, “second room/door”, etc.) and detect multi-object relations using keywords like “between”, “along”, and “across”.
                     </li>
